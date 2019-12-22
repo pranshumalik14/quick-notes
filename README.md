@@ -1,2 +1,2 @@
 # quick-notes
-Summary articles for some topics!
+Reference articles for some topics!
