@@ -8,7 +8,7 @@
 \date{Fall Semester, 2019}
 \begin{document}
 
-\title{\textbf{\Large{\textsc{ECE311:} Introduction to Control Systems}} \\ \Large{Summary Notes}\vspace{-0.3cm}}
+\title{\textbf{\Large{\textsc{ECE311:} Introduction to Control Systems}} \\ \Large{Reference Notes}\vspace{-0.3cm}}
 \author{Pranshu Malik}
 
 \maketitle
@@ -24,38 +24,51 @@
 
 \section{Introduction to Control Systems}
 
-
-\section{Mathematical Models of Systems}
+\section{Mathematical Models of Physical Systems}
 \subsection{Input-Output Representation}
 \subsection{State Representation}
 \subsection{Transfer Functions}
+\subsection{Linearization}
+\subsection{Block Diagrams}
 \subsection{Transient Response}
+% \subsubsection{Initial-state Response}
+% \subsubsection{Input Response}
+% \subsubsection{Total Response}
 \subsubsection{Performance Specifications in the Time Domain}
 
-
 \section{Feedback in Control Systems}
-\begin{figure}[h]
-    \centering
-    \begin{tikzpicture}
-        \rlccircuit
-    \end{tikzpicture}
-\end{figure}
+\subsection{Open Loop Controller}
+\subsection{Closed Loop Controller}
+remark about why $C(s)$ is placed facing the reference and feedback...
 
 \section{Stability}
 \subsection{Internal Stability}
 \subsection{BIBO Stability}
+\subsubsection{Relationship with internal stability}
+
+\subsubsection{Routh-Hurwitz Criterion}
 \subsection{The Tracking Problem}
+\subsubsection{Internal Model Principle}
 \subsection{The Stabilization Problem}
+\subsubsection{Nyquist Stability Criterion}
+
+\section{Frequency Response and Robustness Margins}
 \subsection{Frequency Response}
-\subsubsection{Bode Plots}
-\subsubsection{Performance Specifications in the Frequency Domain}
+\subsection{Bode Plots}
+\subsection{Performance Specifications in the Frequency Domain}
+\subsection{Robustness Margins}
+\subsubsection{Stability Margin, \texorpdfstring{$S_m$}{Sm}}
+\subsubsection{Phase Margin, \texorpdfstring{$\phi_m$}{Pm}}
+\subsubsection{Gain Margin, \texorpdfstring{$G_m$}{Gm}}
+\subsection{Transient Performance in the Frequency Domain}
 
-
-\section{Controller Design for Systems}
-
+\section{Control Design in Frequency Domain}
+Control/Compensator
+\subsection{Lead Compensator}
+\subsection{Lag Compensator}
+\subsection{Lead-lag Compensators and Lead-PI Controllers}
+Remark on PID
 
 \section{Acknowledgements}
 
-
-\section{Formula Sheet}
 \end{document}

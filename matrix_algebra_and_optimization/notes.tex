@@ -9,40 +9,137 @@
 \begin{document}
 
 \title{\textbf{\Large{\textsc{ECE367:} Matrix Algebra and Optimization}} \\ \Large{Reference Notes}\vspace{-0.3cm}}
-\author{Joonsu Oh\\\footnotesize Typeset by Pranshu Malik}
+\author{Professor Frank R. Kschischang\\\small{\textbf{Scribe:} Pranshu Malik}}
 
 \maketitle
 \tableofcontents
 \blfootnote
 {
-    \textbf{Note:} This document is \underline{not} meant to be a comprehensive treatment of the material 
-    or contain the complete course notes. The primary purpose of this document is to summarise key concepts along with some analysis and proofs, that can aid in revising the course or serve as a quick reference to a particular topic. Any suggestions or corrections are appreciated and can be
-    sent directly to \texttt{\href{mailto:pranshu.malik@mail.utoronto.ca}{pranshu.malik@mail.utoronto.ca}}
+    \textbf{Note:} This document is \underline{not} meant to be a comprehensive treatment of the material. The primary purpose of this document is to summarise key concepts along with some analysis and proofs, that can aid in revising the course or serve as a quick reference to a particular topic. Any suggestions or corrections are appreciated and can be sent directly to \texttt{\href{mailto:pranshu.malik@mail.utoronto.ca}{pranshu.malik@mail.utoronto.ca}}
 }
 
 \pagebreak
 
 \section{Optimization Problems in Standard Form}
 
-A typical optimization problem formulation is as follows:\\
-
-\begin{defn}{}
-    For decision variables $x_1$, $x_2$, \ldots, $x_n$
+A typical optimization problem can be written in the following form:\\
+\begin{defn}[Formulation of an optimization problem]{defn:optimization_def}
+    For a vector of decision variables $\vec{x} = [x_1, \ldots, x_n]^\top$ determine the optimal value,
+    \[
+        p^* = \min_{\vec{x} \in \mathcal{D}} f_0(\vec{x})\\
+    \]
+    subject to: 
+    \begin{align*}
+        f_1(\vec{x}) &\leq 0\\
+        f_2(\vec{x}) &\leq 0\\
+        &\vdots\\
+        f_m(\vec{x}) &\leq 0
+    \end{align*}
+    where $f_0: \mathcal{X} \to \mathcal{Y}$ is the cost function and $f_1$, $\ldots$, $f_m$ are functions representing constraints over the domain $\mathcal{D}\subseteq \mathcal{X}$.
 \end{defn}
 
-\section{Mathematical Preliminaries}
+We are often interested in the values $\vec{x}^* = [x_1^*, \ldots, x_m^*]^\top$ that achieve the optimal value $p^* = f_0(\vec{x}^*)$, and can thus also write the optimization problem as:\\
+\begin{defn}[Arg min/max]{defn:arg_min}
+    Subject to the given constraints, 
+    \[
+        \text{find: } \vec{x}^* = \argmin_{\vec{x} \in \mathcal{D}} f_0(\vec{x}), \quad \text{where} \quad \argmin_{\vec{x} \in \mathcal{D}} f_0(\vec{x}) := \{\vec{x} \in \mathcal{D} \mid \forall \vec{y} \in \mathcal{D}, f_0(\vec{y}) \geq f_0(\vec{x})\}
+    \]
+    Note here that $\displaystyle{\argmax_{\vec{x} \in \mathcal{D}} f(\vec{x})}$ is also defined similarly.
+\end{defn}
 
+\textbf{Remark:} If we want to instead maximize a function $g_0(\vec{x})$, we can set $f_0(\vec{x}) = -g_0(\vec{x})$. Then, we have $\displaystyle{g_0\left( \argmax_{\vec{x}\in\mathcal{D}}g_0(\vec{x})\right)} = \displaystyle{\max_{\vec{x} \in \mathcal{D}} g_0(\vec{x})}  = \displaystyle{-\left(\min_{\vec{x} \in \mathcal{D}} -g_0(\vec{x})\right)} = \displaystyle{-\left(\min_{\vec{x} \in \mathcal{D}} f_0(\vec{x})\right) = -f_0\left( \argmin_{\vec{x}\in\mathcal{D}}f_0(\vec{x})\right)}$.
+
+\textbf{Example:} An oil refinery produces two products: jet fuel and gasoline. The profit per barrel is \$0.1 for jet fuel and \$0.2 As constraints, only 10,000 barrels of crude oil is available and the refinery has a contract to produce at least 1000 barrels of jet fuel and 2000 barrels of gasoline. Additionally, the refined products are shipped in tanker-trucks with a capacity of 180,000 barrels/km and the jet fuel is delivered 10 km away and gasoline is delivered 30 km from the refinery. What quantities of each product should be produced to maximize profit?
+
+Let $\vec{x} = [x_1, x_2]^\top$ be the amounts of jet fuel and gasoline to be produced respectively. The profit is our objective function, $g(\vec{x}) = 0.1x_1 + 0.2x_2$, and the optimization problem becomes finding $\displaystyle{\argmax_{x_1, x_2 \in [0, \infty)} g(\vec{x})}$ subject to the constraints $x_1 + x_2 \leq 10000$, $x_1 \geq 1000$, $x_2 \geq 2000$, $10x_1 + 30x_2 \leq 180000$.
+
+\begin{mdframed}[backgroundcolor=red]
+    Add graph here
+\end{mdframed}
+
+\textbf{Example}--\textit{Knapsack Problem}: Given a knapsack that can hold up to $W$ weight in total, we need to select from a collection of $N$ objects where the $i^{\text{th}}$ object has weight $w_i$ and value $v_i$, such that the net value of objects in the sack is maximized.
+
+The problem requires $N$ decision variables $x_1, \ldots, x_n \in \{0,1\}$ where $x_i = 0$ denotes exclusion and $x_i = 1$ denotes inclusion of the $i^{\text{th}}$ object in the knapsack, respectively. The optimization problem is to maximize $x_1v_1 + \ldots + x_nv_n$, subject to $x_1w_1 + \ldots + x_nw_n \leq W$. We note here that this problem is an NP-Complete (\href{https://www.cc.gatech.edu/~rpeng/CS3510_F16/notes/Nov28knapsackNPC.pdf}{\texttt{link}} to proof).
+
+\subsection{Linear Regression}
+Given a collection of $N$ data points $(x_1, y_1), \ldots, (x_n, y_n) \in \mathbb{R}^2$, we would like to find a straight line, $y = mx + b$,  which gives the "best fit". We can define the error for the $i^{\text{th}}$ data point,  $(x_i, y_i)$, to be $\epsilon_i = y_i - (mx_i + b)$. We can define the "best fit" line as the choice of parameters $m, b$ such that the total squared error is minimized.
+\[
+    \min_{m, b \in \mathbb{R}} f_0(m, b), \quad \text{where} \quad f_0(m, b) := \sum_{i=1}^{N} \epsilon_i^2 = \sum_{i=1}^N (y_i - (mx_i + b))^2
+\]
+We chose to minimize the total squared error instead of the total absolute error, $\sum_i|\epsilon_i|$, because of its nicer mathematical properties such as global differentiability (derivative of absolute error is undefined at 0). This, among many other reasons, makes squared error more amenable to the techniques of mathematical optimization \footnote{\href{https://www.benkuhn.net/squared}{\texttt{https://www.benkuhn.net/squared}}}.
+
+\begin{mdframed}[backgroundcolor=red]
+    Add graph here
+\end{mdframed}
+
+\subsection{Function Approximation}
+Another example of a mathematical optimization problem is approximating differentiable functions using rectangular functions over discrete intervals. More specifically, given 
+\[
+    \text{rect}(t) := 
+    \begin{cases} 
+      1, & -\frac{1}{2} \leq t \leq \frac{1}{2} \\
+      0, & \text{otherwise} 
+   \end{cases}
+\]
+we define a set of all possible linear combinations of time-shifted rectangular functions over $N$ intervals,
+\[
+    \Omega = \left\{\sum_{i = 0}^{N-1} a_i\text{rect}(t-i) \mid a_i \in \mathbb{R}\right\}.
+\]
+Now, for any given signal $s(t)$, we need to find the element in $\Omega$ that "best" approximates $s(t)$ over the period $[-\frac{1}{2}, N-\frac{1}{2}]$. Here again, "best" can be based on least squared error and with $a_0, \ldots, a_{N-1}$ as decision variables, the optimization problem becomes finding
+\[
+    \argmin_{a_0, \ldots, a_{N-1}\in \mathbb{R}} \bigintss_{-\frac{1}{2}}^{N-\frac{1}{2}}\left( \left(\sum_{i=0}^{N-1}a_i\text{rect}(t-i)\right) - s(t) \right)^2 dt
+\]
+\begin{mdframed}[backgroundcolor=red]
+    Add graph here
+\end{mdframed}
+The numerical exercises involve setting up and solving a few variations of optimization problems numerically using Julia packages (covered in \hyperlink{section.10}{section 10}).
+
+\section{Mathematical Preliminaries}
 \subsection{Sets}
+We will often deal with sets of elements and a few key definitions are listed below. 
+\begin{itemize}
+    \item A set might also be empty and is denoted as $\phi$.
+    \item A set with exactly one element, $\{x\}$, is called a \textit{singleton} set.
+    \item If $A, B$ are sets, we write $A \subseteq B$ to assert that every element of $A$ is also an elements of $B$.
+    \item The Cartesian product of two sets $A, B$ is defined as the set $A \times B := \{(a,b)\mid a\in A, b\in B\}$. This definition may similarly be generalized to a Cartesian product of any number of sets.
+    \item We denote $\underbrace{A\times \ldots \times A}_\text{n times} = A^n$.
+\end{itemize}
+
 \subsection{Functions}
+A function $f: \mathcal{D}\to\mathcal{C}$, from a set $\mathcal{D}$ (\textit{domain}) into a set $\mathcal{C}$ (\textit{co-domain}), is a rule that assigns exactly one element of $\mathcal{C}$ to every element of $\mathcal{D}$. Some associated terms for such functions are listed below.
+\begin{itemize}
+    \item Any argument, $x$, to the function, $f$, maps to $f(x)$ and is denoted as $x \mapsto f(x)$.
+    \item For a set $A\subseteq\mathcal{D}$, the \textit{image} of $A$ under mapping by $f$ is the set $f(A := \{c\in\mathcal{C}\mid c = f(a) \text{ for some } a\in A\} = \{f(a)\mid a\in A\}$. Also note that, $f(\phi) = \phi$.
+    \item $\mathcal{R} = f(\mathcal{D})$, the set of all elements of $\mathcal{C}$ "hit" by $f$ over the domain, is called the \textit{range} of $f$. Note that $\mathcal{R}\subseteq\mathcal{C}$.
+    \item For a set $B\subseteq\mathcal{C}$, the \textit{inverse image} or \textit{pre-image} of $B$ under mapping by $f$ is the set $f^{-1}(B) := \{d\in\mathcal{D}\mid f(d)\in B\}$. Note that $f^{-1}(B)$ may also be empty even though $B\neq \phi$.
+    \item The function $f$ is called \textit{injective} or \textit{one-to-one} if distinct elements of $\mathcal{D}$ are mapped by $f$ to distinct elements of $\mathcal{C}$, that is $d_1\neq d_2 \implies f(d_1)\neq f(d_2)$.
+    \item The function $f$ is called \textit{surjective} or \textit{onto} if every element of $\mathcal{C}$ is mapped to by $f$ over $\mathcal{D}$.
+    \item A function that it both injective and surjective is called \textit{bijective}. Note that if $f:\mathcal{D}\to\mathcal{C}$ is a bijection, then the function $f^{-1}:\mathcal{C}\to\mathcal{D}$ exists, such that $f(d) = c \implies f^{-1}(c) = d \; \forall d\in\mathcal{D}, c\in\mathcal{C}$.
+    \item A \textit{binary operation} on a set $A$ is a map $f:A^2\to A$ taking pairs of elements of $A$ to an element in $A$. For example, +(a,b) (addition, usually written $a+b$) and $\cdot(a,b)$ (multiplication, usually written $a\cdot b$).
+    \item A binary operation $*$ on set $A$ is \textit{associative} if $(a*b)*c = a*(b*c) \; \forall a,b,c \in A$.
+    \item A binary operation $*$ on set $A$ is \textit{commutative} if $a*b = b*a \; \forall a,b \in A$. Note that matrix multiplication is non-commutative.
+    \item A binary operation on set $A$ has an \textit{identity} if $\exists \, e \in A$ such that $a*e = e*a = a \; \forall a \in A$. The identity element $e$ is unique, since if we suppose identity elements $e_1\neq e_2$, then $e_1 = e_1*e_2 = e_2$ which is a contradiction. As examples, $0$ is the additive identity in $\mathbb{Z}$ and $I$ is the identity matrix under multiplication.
+    \item If a binary operation $*$ on $A$ has an identity element $e$, then an element $b \in A$ is called the inverse of an element $a \in A$ if $a*b =b*a=e$. Note that an element can have at most one inverse. As examples, every nonzero element $x \in \mathbb{R}$ has a multiplicative inverse $\frac{1}{x}$, while in $\mathbb{Z}$, only $1$ and $-1$ have a multiplicative inverse. Also, every element $x \in \mathbb{R}$ has an additive inverse $-x$.
+\end{itemize}
+
 \subsection{Fields}
+A field is a set $\mathcal{F}$ equipped with two binary operations $+$ (addition) and $\cdot$ (multiplication) such that:
+\begin{enumerate}
+    \item $+$  is associative and commutative with identity element $0$ and $\forall x, \, -x$ is its additive inverse
+    \item $\cdot$ is associative and commutative with identity element $1$ and $\forall x \neq 0, \, \frac{1}{x}$ is its multiplicative inverse
+    \item the \textit{distributive law} holds, i.e., $\forall\, a, b, c \in \mathcal{F}, \; a \cdot (b + c) = (a \cdot b) + (a \cdot c)$.
+\end{enumerate}
+
+The sets $\mathbb{R}, \mathbb{C}$ form fields under the usual arithmetic operations, but the set $\mathbb{Z}$ does not form a field. Fields are important as they provide scalars in a vector space.
 
 \section{Vector Spaces}
+Start here.
 \subsection{Subspaces}
 \subsection{Affine Sets}
 
 \section{Norms and Inner Products}
 \subsection{Norms}
-\subsection{Inner Products}
+\subsection{Inner Products} 
 
 \section{Projection on Subspaces}
 \subsection{Orthogonal Projection on One-dimensional Subspaces}
@@ -66,6 +163,9 @@ A typical optimization problem formulation is as follows:\\
 \subsubsection{Change of Basis}
 \subsubsection{Theorems for Matrices}
 \subsection{Diagonal Matrices for Operators}
+\begin{mdframed}[backgroundcolor=red]
+    Finish till here.
+\end{mdframed}
 
 \section{Operators on Inner-Product Spaces}
 \subsection{Upper Triangular Matrices}
@@ -92,6 +192,14 @@ A typical optimization problem formulation is as follows:\\
 \subsubsection{The Moore-Penrose Pseudoinverse}
 \subsubsection{Back to Least Squares}
 \subsubsection{Coordinate View}
+
+\section{Numerical Exercises}
+\subsection{Exercise 0}
+\subsection{Exercise 1}
+\subsection{Exercise 2}
+\subsection{Exercise 3}
+\subsection{Exercise 4}
+\subsection{Exercise 5}
 
 \section{Acknowledgements}
 
