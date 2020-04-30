@@ -24,7 +24,7 @@
 
 A typical optimization problem can be written in the following form:\\
 \begin{defn}[Formulation of an optimization problem]{defn:optimization_def}
-    For a vector of decision variables $\vec{x} = [x_1, \ldots, x_n]^\top$ determine the optimal value,
+    For a vector of decision variables $\vec{x} = [x_1, \ldots, x_n]^\top \in \mathbb{R}^n$ determine the optimal value,
     \[
         p^* = \min_{\vec{x} \in \mathcal{D}} f_0(\vec{x})\\
     \]
@@ -35,7 +35,7 @@ A typical optimization problem can be written in the following form:\\
         &\vdots\\
         f_m(\vec{x}) &\leq 0
     \end{align*}
-    where $f_0: \mathcal{X} \to \mathcal{Y}$ is the cost function and $f_1$, $\ldots$, $f_m$ are functions representing constraints over the domain $\mathcal{D}\subseteq \mathcal{X}$.
+    where $f_0: \mathbb{R}^n \to \mathbb{R}$ is the cost function and $f_1$, $\ldots$, $f_m$ are scalar functions representing constraints over the domain $\mathcal{D}\subseteq \mathbb{R}^n$.
 \end{defn}
 
 We are often interested in the values $\vec{x}^* = [x_1^*, \ldots, x_m^*]^\top$ that achieve the optimal value $p^* = f_0(\vec{x}^*)$, and can thus also write the optimization problem as:\\
